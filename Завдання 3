@@ -1,0 +1,77 @@
+using System;
+
+
+public abstract class Screen
+{
+    public abstract void Display();
+}
+
+
+public class OLED : Screen
+{
+    public override void Display()
+    {
+        Console.WriteLine("OLED screen displaying");
+    }
+}
+
+public class LCD : Screen
+{
+    public override void Display()
+    {
+        Console.WriteLine("LCD screen displaying");
+    }
+}
+
+
+public interface IDeviceFactory
+{
+    Screen CreateScreen();
+}
+
+
+public class SmartphoneFactory : IDeviceFactory
+{
+    public Screen CreateScreen()
+    {
+        return new OLED();
+    }
+}
+
+public class LaptopFactory : IDeviceFactory
+{
+    public Screen CreateScreen()
+    {
+        return new LCD();
+    }
+}
+
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Enter the type of product to create (Smartphone/Laptop): ");
+        string productType = Console.ReadLine();
+
+        IDeviceFactory factory;
+
+        switch (productType.ToLower())
+        {
+            case "smartphone":
+                factory = new SmartphoneFactory();
+                break;
+
+            case "laptop":
+                factory = new LaptopFactory();
+                break;
+
+            default:
+                Console.WriteLine("Invalid product type");
+                return;
+        }
+
+        Screen screen = factory.CreateScreen();
+        screen.Display();
+    }
+}
