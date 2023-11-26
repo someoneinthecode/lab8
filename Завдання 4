@@ -1,0 +1,118 @@
+using System;
+
+
+public interface IDataTemplate
+{
+    IDataTemplate Clone();
+}
+
+
+public class CsvDataTemplate : IDataTemplate
+{
+    public IDataTemplate Clone()
+    {
+        return new CsvDataTemplate();
+    }
+}
+
+public class XmlDataTemplate : IDataTemplate
+{
+    public IDataTemplate Clone()
+    {
+        return new XmlDataTemplate();
+    }
+}
+
+public class JsonDataTemplate : IDataTemplate
+{
+    public IDataTemplate Clone()
+    {
+        return new JsonDataTemplate();
+    }
+}
+
+
+public interface IDataConverter
+{
+    void Convert();
+}
+
+public class CsvToXmlAdapter : IDataConverter
+{
+    private IDataTemplate xmlDataTemplate;
+
+    public CsvToXmlAdapter(IDataTemplate xmlDataTemplate)
+    {
+        this.xmlDataTemplate = xmlDataTemplate;
+    }
+
+    public void Convert()
+    {
+        Console.WriteLine("Converting CSV to XML");
+
+    }
+}
+
+public class XmlToJsonAdapter : IDataConverter
+{
+    private IDataTemplate jsonDataTemplate;
+
+    public XmlToJsonAdapter(IDataTemplate jsonDataTemplate)
+    {
+        this.jsonDataTemplate = jsonDataTemplate;
+    }
+
+    public void Convert()
+    {
+        Console.WriteLine("Converting XML to JSON");
+
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Enter the source data format (CSV/XML): ");
+        string sourceFormat = Console.ReadLine();
+
+        Console.WriteLine("Enter the target data format (XML/JSON): ");
+        string targetFormat = Console.ReadLine();
+
+        IDataTemplate sourceTemplate;
+
+        switch (sourceFormat.ToLower())
+        {
+            case "csv":
+                sourceTemplate = new CsvDataTemplate();
+                break;
+
+            case "xml":
+                sourceTemplate = new XmlDataTemplate();
+                break;
+
+            default:
+                Console.WriteLine("Invalid source data format");
+                return;
+        }
+
+        IDataConverter converter;
+
+        switch (targetFormat.ToLower())
+        {
+            case "xml":
+                converter = new CsvToXmlAdapter(sourceTemplate);
+                break;
+
+            case "json":
+                converter = new XmlToJsonAdapter(sourceTemplate);
+                break;
+
+            default:
+                Console.WriteLine("Invalid target data format");
+                return;
+        }
+
+        converter.Convert();
+    }
+}
